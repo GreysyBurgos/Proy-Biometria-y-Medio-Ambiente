@@ -13,7 +13,7 @@ Este proyecto integra un **dispositivo Arduino** que actúa como **emisora iBeac
 
 ## 🛠️ Tecnologías usadas
 
-- **Arduino.**
+- **Arduino:** Placa sensor (SparkFun nRF52832).
 - **Android Studio** con Java.
 - Librerías BLE de Android (`BluetoothAdapter`, `BluetoothLeScanner`, etc.).
 - Herramientas de depuración como **nRF Connect** para verificar el correcto funcionamiento.
