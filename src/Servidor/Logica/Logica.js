@@ -1,4 +1,5 @@
 /* 
+// @autor: Greysy Burgos Salazar
 Logica.js
 -----------------------------
 Lógica de negocio del backend BLE.

@@ -1,4 +1,4 @@
-// URL de la API Node.js (ajusta si usas IP local o Plesk)
+// URL de la API Node.js (ajusta si usas IP local)
 const API_URL = "http://localhost:3000/medidas";
 
 async function cargarMedidas() {
@@ -47,7 +47,7 @@ async function cargarMedidas() {
   }
 }
 
-// Cargar al iniciar y refrescar cada 5 s
+// Cargar al iniciar y refrescar cada 10 s
 document.addEventListener("DOMContentLoaded", () => {
   cargarMedidas();
   setInterval(cargarMedidas, 10000);

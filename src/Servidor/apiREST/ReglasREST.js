@@ -1,5 +1,5 @@
 // @autor: Greysy Burgos Salazar
-// API REST BLE — Guarda y consulta mediciones de CO2 enviadas por Android
+// API REST — Guarda y consulta mediciones de CO2 enviadas por Android
 
 const express = require("express");
 
