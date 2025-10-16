@@ -1,16 +1,7 @@
-:root {
-  --bg: #f7f9fc;
-  --accent: #0077cc;
-  --text: #333;
-  --panel: #fff;
-  --border: #ddd;
-  --muted: #777;
-}
-
 body {
   font-family: "Segoe UI", sans-serif;
-  background: var(--bg);
-  color: var(--text);
+  background: rgb(254, 230, 230);
+  color: rgb(17, 17, 17);
   margin: 0;
 }
 
@@ -22,7 +13,7 @@ body {
 
 /* Header */
 .topbar {
-  background: var(--accent);
+  background: rgb(134, 151, 101);
   color: white;
   padding: 1rem 0;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
@@ -40,7 +31,7 @@ body {
 
 /* Panel */
 .panel {
-  background: var(--panel);
+  background: rgb(239, 239, 239);
   border-radius: 10px;
   padding: 1.5rem;
   margin-top: 2rem;
@@ -72,7 +63,7 @@ body {
 .table th, .table td {
   text-align: center;
   padding: 0.6rem;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid;
 }
 
 .table th {
