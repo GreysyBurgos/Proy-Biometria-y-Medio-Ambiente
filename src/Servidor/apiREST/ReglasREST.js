@@ -1,27 +1,32 @@
 // @autor: Greysy Burgos Salazar
-// Define las rutas de la API REST
+// Define las rutas de la API REST BLE
 
 const express = require("express");
 
 function reglasREST(logica) {
   const router = express.Router();
 
-  // POST /medida → guarda una fila con gas + humedad
+  // POST /medida → guarda una fila con gas + contador
   router.post("/medida", async (req, res) => {
     try {
-      const { uuid, gas, humedad, contador } = req.body;
-      if (!uuid || gas === undefined || humedad === undefined) {
+      const { uuid, gas, contador } = req.body;
+
+      if (!uuid || gas === undefined || contador === undefined) {
         return res.status(400).json({
           status: "error",
-          mensaje: "Faltan campos en el JSON (uuid, gas, humedad)"
+          mensaje: "Faltan campos en el JSON (uuid, gas, contador)"
         });
       }
 
-      const medida = await logica.guardarMedida(uuid, gas, humedad, contador);
+      const medida = await logica.guardarMedida(uuid, gas, contador);
       res.json({ status: "ok", medida });
     } catch (err) {
       console.error("Error en POST /medida:", err);
-      res.status(500).json({ status: "error", mensaje: "Error interno", detalle: err.message });
+      res.status(500).json({
+        status: "error",
+        mensaje: "Error interno del servidor",
+        detalle: err.message
+      });
     }
   });
 
