@@ -3,40 +3,40 @@
 // ---------------------------------------------------------------------------
 
 const assert = require("assert");
-const Logica = require("../Logica");
+const Logica = require("../Logica.js");
 
 // Configuración de conexión a tu base de datos local
 const DB_CONFIG = {
   host: "localhost",
-  port: 3307,           // ⚠️ muy importante: el puerto de tu MySQL
+  port: 3307, // puerto MySQL
   user: "root",
-  password: "",         // tu contraseña si la tienes (vacío si no)
+  password: "",
   database: "proy"
 };
 
-describe("✅ Test de la clase Logica.js (sin API)", function () {
+describe("Test de la clase Logica.js (sin API)", function () {
   let logica;
 
-  // Más tiempo porque las consultas pueden tardar
-  this.timeout(5000);
+  this.timeout(5000); // más tiempo por consultas lentas
 
-  // Antes de todos los tests: crear conexión
+  // Antes de todos los tests
   before(async function () {
     logica = new Logica(DB_CONFIG);
     const ok = await logica.probarConexion();
     assert.strictEqual(ok, true, "No se pudo conectar a MySQL");
   });
 
-  // Después de todos los tests: cerrar pool de conexiones
+  // Después de todos los tests
   after(async function () {
     await logica.pool.end();
   });
 
   // -------------------------------------------------------
   it("guardarMedida() inserta una fila correctamente", async function () {
-    const medida = await logica.guardarMedida("GTI-3A", 420.5, 60.2, 1);
+    const medida = await logica.guardarMedida("GTI-3A", 420.5, 1);
     assert.ok(medida.id, "No devolvió un id de inserción");
     assert.strictEqual(medida.uuid, "GTI-3A");
+    assert.strictEqual(medida.contador, 1);
   });
 
   // -------------------------------------------------------
@@ -45,5 +45,6 @@ describe("✅ Test de la clase Logica.js (sin API)", function () {
     assert.ok(Array.isArray(medidas), "No devolvió un array");
     assert.ok(medidas.length > 0, "No hay mediciones guardadas");
     assert.ok(medidas[0].fecha, "Las filas no incluyen campo fecha");
+    assert.ok(medidas[0].contador !== undefined, "Las filas no incluyen campo contador");
   });
 });

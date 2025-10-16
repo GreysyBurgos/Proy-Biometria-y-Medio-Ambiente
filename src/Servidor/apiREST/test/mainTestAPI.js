@@ -5,17 +5,16 @@
 const request = require("request");
 const assert = require("assert");
 
-const API = "http://localhost:3000"; // URL de tu servidor local
+const API = "http://localhost:3000"; // URL servidor local
 
 // ---------------------------------------------------------------------------
 // TEST 1: Inserción básica de medida
 // ---------------------------------------------------------------------------
-describe("✅ Test 1: Inserción básica de medida", function () {
+describe("Test 1: Inserción básica de medida", function () {
   it("debería guardar una medición completa correctamente", function (done) {
     const medida = {
       uuid: "SENSOR-GTI-6",
       gas: 405.8,
-      humedad: 55.2,
       contador: 12
     };
 
@@ -44,12 +43,12 @@ describe("✅ Test 1: Inserción básica de medida", function () {
 // ---------------------------------------------------------------------------
 // TEST 2: Validación de JSON incompleto
 // ---------------------------------------------------------------------------
-describe("⚠️ Test 2: Validación de datos de entrada", function () {
+describe("Test 2: Validación de datos de entrada", function () {
   it("debería devolver error 400 si faltan campos obligatorios", function (done) {
     const medida = {
       uuid: "SENSOR-GTI-6",
       gas: 500.2
-      // Falta humedad y contador
+      // Falta contador
     };
 
     request.post(
@@ -74,12 +73,11 @@ describe("⚠️ Test 2: Validación de datos de entrada", function () {
 // ---------------------------------------------------------------------------
 // TEST 3: Comprobación de coherencia de respuesta
 // ---------------------------------------------------------------------------
-describe("🧠 Test 3: Coherencia de respuesta", function () {
+describe("Test 3: Coherencia de respuesta", function () {
   it("debería devolver exactamente los mismos datos que se insertaron", function (done) {
     const medida = {
       uuid: "GTI-6-DEMO",
       gas: 450.3,
-      humedad: 70.8,
       contador: 8
     };
 
@@ -97,10 +95,7 @@ describe("🧠 Test 3: Coherencia de respuesta", function () {
         const m = data.medida;
 
         assert.strictEqual(m.uuid, medida.uuid);
-        //assert.strictEqual(m.gas, medida.gas);
         assert.ok(Math.abs(m.gas - medida.gas) < 0.001, `Gas distinto: ${m.gas} vs ${medida.gas}`);
-        //assert.strictEqual(m.humedad, medida.humedad);
-        assert.ok(Math.abs(m.humedad - medida.humedad) < 0.001, `Humedad distinto: ${m.humedad} vs ${medida.humedad}`);
         assert.strictEqual(m.contador, medida.contador);
 
         console.log("✔ Datos coherentes entre envío y respuesta");
@@ -113,7 +108,7 @@ describe("🧠 Test 3: Coherencia de respuesta", function () {
 // ---------------------------------------------------------------------------
 // TEST 4: Listado de mediciones (GET /medidas)
 // ---------------------------------------------------------------------------
-describe("📋 Test 4: Listado de mediciones", function () {
+describe("Test 4: Listado de mediciones", function () {
   it("GET /medidas debería devolver una lista con al menos una fila", function (done) {
     request.get(
       {
@@ -127,6 +122,13 @@ describe("📋 Test 4: Listado de mediciones", function () {
         const json = JSON.parse(body);
         const datos = Array.isArray(json.medidas) ? json.medidas : [];
         assert.ok(datos.length > 0, "El array está vacío o no existe");
+
+        // Validamos campos esperados
+        const fila = datos[0];
+        assert.ok(fila.uuid, "Falta campo uuid");
+        assert.ok(fila.gas !== undefined, "Falta campo gas");
+        assert.ok(fila.contador !== undefined, "Falta campo contador");
+        assert.ok(fila.fecha, "Falta campo fecha");
 
         console.log("✔ GET /medidas devolvió", datos.length, "filas");
         done();
