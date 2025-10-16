@@ -5,7 +5,7 @@
 const request = require("request");
 const assert = require("assert");
 
-const API = "http://localhost:3000"; // URL servidor local
+const API = "http://localhost:3000"; // URL del servidor local
 
 // ---------------------------------------------------------------------------
 // TEST 1: Inserción básica de medida
@@ -14,15 +14,15 @@ describe("Test 1: Inserción básica de medida", function () {
   it("debería guardar una medición completa correctamente", function (done) {
     const medida = {
       uuid: "SENSOR-GTI-6",
-      gas: 405.8,
-      contador: 12
+      gas: 405,
+      contador: 12,
     };
 
     request.post(
       {
         url: API + "/medida",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(medida)
+        body: JSON.stringify(medida),
       },
       (err, res, body) => {
         assert.strictEqual(err, null, "Error al conectar con el servidor");
@@ -32,6 +32,7 @@ describe("Test 1: Inserción básica de medida", function () {
         assert.strictEqual(respuesta.status, "ok", "Estado distinto de OK");
         assert.strictEqual(respuesta.medida.uuid, medida.uuid);
         assert.strictEqual(respuesta.medida.contador, medida.contador);
+        assert.strictEqual(respuesta.medida.gas, medida.gas);
 
         console.log("✔ Inserción confirmada con ID =", respuesta.medida.id);
         done();
@@ -47,7 +48,7 @@ describe("Test 2: Validación de datos de entrada", function () {
   it("debería devolver error 400 si faltan campos obligatorios", function (done) {
     const medida = {
       uuid: "SENSOR-GTI-6",
-      gas: 500.2
+      gas: 500,
       // Falta contador
     };
 
@@ -55,7 +56,7 @@ describe("Test 2: Validación de datos de entrada", function () {
       {
         url: API + "/medida",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(medida)
+        body: JSON.stringify(medida),
       },
       (err, res, body) => {
         assert.strictEqual(err, null);
@@ -71,21 +72,21 @@ describe("Test 2: Validación de datos de entrada", function () {
 });
 
 // ---------------------------------------------------------------------------
-// TEST 3: Comprobación de coherencia de respuesta
+// TEST 3: Coherencia de respuesta
 // ---------------------------------------------------------------------------
 describe("Test 3: Coherencia de respuesta", function () {
   it("debería devolver exactamente los mismos datos que se insertaron", function (done) {
     const medida = {
       uuid: "GTI-6-DEMO",
-      gas: 450.3,
-      contador: 8
+      gas: 450,
+      contador: 8,
     };
 
     request.post(
       {
         url: API + "/medida",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(medida)
+        body: JSON.stringify(medida),
       },
       (err, res, body) => {
         assert.strictEqual(err, null);
@@ -95,7 +96,7 @@ describe("Test 3: Coherencia de respuesta", function () {
         const m = data.medida;
 
         assert.strictEqual(m.uuid, medida.uuid);
-        assert.ok(Math.abs(m.gas - medida.gas) < 0.001, `Gas distinto: ${m.gas} vs ${medida.gas}`);
+        assert.strictEqual(m.gas, medida.gas);
         assert.strictEqual(m.contador, medida.contador);
 
         console.log("✔ Datos coherentes entre envío y respuesta");
@@ -113,7 +114,7 @@ describe("Test 4: Listado de mediciones", function () {
     request.get(
       {
         url: API + "/medidas?limit=10",
-        headers: { "Content-Type": "application/json" }
+        headers: { "Content-Type": "application/json" },
       },
       (err, res, body) => {
         assert.strictEqual(err, null);

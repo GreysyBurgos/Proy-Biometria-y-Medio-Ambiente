@@ -8,10 +8,10 @@ const Logica = require("../Logica.js");
 // Configuración de conexión a tu base de datos local
 const DB_CONFIG = {
   host: "localhost",
-  port: 3307, // puerto MySQL
+  port: 3307,
   user: "root",
   password: "",
-  database: "proy"
+  database: "proy",
 };
 
 describe("Test de la clase Logica.js (sin API)", function () {
@@ -33,10 +33,11 @@ describe("Test de la clase Logica.js (sin API)", function () {
 
   // -------------------------------------------------------
   it("guardarMedida() inserta una fila correctamente", async function () {
-    const medida = await logica.guardarMedida("GTI-3A", 420.5, 1);
+    const medida = await logica.guardarMedida("GTI-3A", 420, 1);
     assert.ok(medida.id, "No devolvió un id de inserción");
     assert.strictEqual(medida.uuid, "GTI-3A");
     assert.strictEqual(medida.contador, 1);
+    assert.strictEqual(medida.gas, 420);
   });
 
   // -------------------------------------------------------
@@ -46,5 +47,6 @@ describe("Test de la clase Logica.js (sin API)", function () {
     assert.ok(medidas.length > 0, "No hay mediciones guardadas");
     assert.ok(medidas[0].fecha, "Las filas no incluyen campo fecha");
     assert.ok(medidas[0].contador !== undefined, "Las filas no incluyen campo contador");
+    assert.ok(medidas[0].gas !== undefined, "Las filas no incluyen campo gas");
   });
 });

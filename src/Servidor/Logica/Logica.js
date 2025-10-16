@@ -2,7 +2,7 @@
 Logica.js
 -----------------------------
 Lógica de negocio del backend BLE.
-Guarda y lee datos de las mediciones recibidas.
+Guarda y lee datos de las mediciones recibidas desde la app Android.
 */
 
 const mysql = require("mysql2/promise");
@@ -21,12 +21,13 @@ class Logica {
     });
   }
 
+  // Verifica conexión a la BD
   async probarConexion() {
     const [rows] = await this.pool.query("SELECT 1 AS ok");
     return rows[0].ok === 1;
   }
 
-  // Guarda una medición con gas + contador
+  // Guarda una medición (uuid, gas, contador)
   async guardarMedida(uuid, gas, contador) {
     if (!uuid) throw new Error("Falta UUID del sensor");
     if (gas === undefined) throw new Error("Falta el valor del gas");
@@ -39,14 +40,17 @@ class Logica {
         VALUES (?, ?, ?, NOW())
       `;
       const [resultado] = await conn.execute(sql, [uuid, gas, contador]);
-      const [filas] = await conn.execute(`SELECT * FROM medidas WHERE id = ?`, [resultado.insertId]);
+      const [filas] = await conn.execute(
+        `SELECT * FROM medidas WHERE id = ?`,
+        [resultado.insertId]
+      );
       return filas[0];
     } finally {
       conn.release();
     }
   }
 
-  // Devuelve las últimas mediciones
+  // Devuelve las últimas mediciones ordenadas por fecha
   async listarMedidas(limit = 50) {
     const conn = await this.pool.getConnection();
     try {
@@ -59,8 +63,8 @@ class Logica {
       `;
       const [filas] = await conn.execute(sql, [lim]);
 
-      // Convertir la fecha a hora local (España)
-      const medidasConHoraLocal = filas.map((fila) => {
+      // Convertir fecha a zona horaria española
+      return filas.map((fila) => {
         const fechaObj = new Date(fila.fecha);
         const fechaLocal = fechaObj.toLocaleString("es-ES", {
           timeZone: "Europe/Madrid",
@@ -68,8 +72,6 @@ class Logica {
         });
         return { ...fila, fechaLocal };
       });
-
-      return medidasConHoraLocal;
     } finally {
       conn.release();
     }

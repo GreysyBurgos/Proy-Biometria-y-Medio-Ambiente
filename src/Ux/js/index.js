@@ -32,6 +32,7 @@ async function cargarMedidas() {
           <td>${m.id}</td>
           <td>${m.uuid}</td>
           <td>${m.gas ?? "-"}</td>
+          <td>${m.contador ?? "-"}</td>
           <td>${fecha}</td>
           <td>${hora}</td>
         </tr>`;
@@ -49,5 +50,5 @@ async function cargarMedidas() {
 // Cargar al iniciar y refrescar cada 5 s
 document.addEventListener("DOMContentLoaded", () => {
   cargarMedidas();
-  setInterval(cargarMedidas, 5000);
+  setInterval(cargarMedidas, 10000);
 });

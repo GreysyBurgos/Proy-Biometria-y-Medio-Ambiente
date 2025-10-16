@@ -1,12 +1,12 @@
 // @autor: Greysy Burgos Salazar
-// Define las rutas de la API REST BLE
+// API REST BLE — Guarda y consulta mediciones de CO2 enviadas por Android
 
 const express = require("express");
 
 function reglasREST(logica) {
   const router = express.Router();
 
-  // POST /medida → guarda una fila con gas + contador
+  // POST /medida → guarda una medición
   router.post("/medida", async (req, res) => {
     try {
       const { uuid, gas, contador } = req.body;
@@ -14,7 +14,7 @@ function reglasREST(logica) {
       if (!uuid || gas === undefined || contador === undefined) {
         return res.status(400).json({
           status: "error",
-          mensaje: "Faltan campos en el JSON (uuid, gas, contador)"
+          mensaje: "Faltan campos en el JSON (uuid, gas, contador)",
         });
       }
 
@@ -25,12 +25,12 @@ function reglasREST(logica) {
       res.status(500).json({
         status: "error",
         mensaje: "Error interno del servidor",
-        detalle: err.message
+        detalle: err.message,
       });
     }
   });
 
-  // GET /medidas → devuelve las últimas filas
+  // GET /medidas → devuelve las últimas mediciones
   router.get("/medidas", async (req, res) => {
     try {
       const { limit } = req.query;
@@ -38,7 +38,11 @@ function reglasREST(logica) {
       res.json({ status: "ok", medidas: filas });
     } catch (err) {
       console.error("Error en GET /medidas:", err);
-      res.status(500).json({ status: "error", mensaje: "Error interno" });
+      res.status(500).json({
+        status: "error",
+        mensaje: "Error interno del servidor",
+        detalle: err.message,
+      });
     }
   });
 
