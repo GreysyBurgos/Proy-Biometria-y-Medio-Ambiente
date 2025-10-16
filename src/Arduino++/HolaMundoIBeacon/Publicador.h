@@ -16,15 +16,15 @@ class Publicador {
 private:
 	//UUID fijo de 16 bytes, identifica el proyecto 
   uint8_t beaconUUID[16] = { 
-	'E', 'P', 'S', 'G', '-', 'G', 'T', 'I', 
-	'-', 'P', 'R', 'O', 'Y', '-', '3', 'A'
+	'U', 'U', 'I', 'D', '-', 'G', 'T', 'I', 
+	'-', 'G', 'R', 'E', 'Y', '-', '3', 'A'
 	};
 
   // ............................................................
   // ............................................................
 public:
   EmisoraBLE laEmisora {
-	"Grey", //  nombre emisora
+	"GTI-GREY-25", //  nombre emisora
 	  0x004c, // fabricanteID (Apple)
 	  4 // txPower
 	  };
@@ -60,39 +60,23 @@ public:
 
   // ............................................................
   // ............................................................
-  void publicarCO2( int16_t valorCO2, uint8_t contador,
-					long tiempoEspera ) {
+ void publicarCO2(int16_t valorCO2, uint8_t contador, long tiempoEspera) {
+    // 1️⃣ Reiniciar todo antes de emitir
+    laEmisora.detenerAnuncio();
+    Bluefruit.Advertising.clearData();
+    Bluefruit.ScanResponse.clearData();
 
-	//
-	// 1. empezamos anuncio
-	//
-	uint16_t major = (MedicionesID::CO2 << 8) + contador;
-	(*this).laEmisora.emitirAnuncioIBeacon( (*this).beaconUUID, 
-											major,
-											valorCO2, // minor
-											(*this).RSSI // rssi
-									);
+    // 2️⃣ Calcular valores y emitir
+    uint16_t major = (MedicionesID::CO2 << 8) + contador;
+    laEmisora.emitirAnuncioIBeacon(beaconUUID, major, valorCO2, RSSI);
 
-	/*
-	Globales::elPuerto.escribir( "   publicarCO2(): valor=" );
-	Globales::elPuerto.escribir( valorCO2 );
-	Globales::elPuerto.escribir( "   contador=" );
-	Globales::elPuerto.escribir( contador );
-	Globales::elPuerto.escribir( "   todo="  );
-	Globales::elPuerto.escribir( major );
-	Globales::elPuerto.escribir( "\n" );
-	*/
+    // 3️⃣ Esperar
+    esperar(tiempoEspera);
 
-	//
-	// 2. esperamos el tiempo que nos digan
-	//
-	esperar( tiempoEspera );
+    // 4️⃣ Detener anuncio
+    laEmisora.detenerAnuncio();
+}
 
-	//
-	// 3. paramos anuncio
-	//
-	(*this).laEmisora.detenerAnuncio();
-  } // ()
 
   // ............................................................
   // ............................................................

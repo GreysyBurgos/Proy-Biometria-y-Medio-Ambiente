@@ -11,6 +11,10 @@
 // ----------------------------------------------------
 #include <vector>
 
+//ERROR DE LIBRERÍAS
+#include <bluefruit.h>     // para asegurarte de que se define BLESecurityMode
+using BleSecurityMode = SecureMode_t; // alias para mantener compatibilidad
+
 // ----------------------------------------------------
 // alReves() utilidad
 // pone al revés el contenido de una array en el mismo array
