@@ -10,11 +10,9 @@
 // ----------------------------------------------------
 // ----------------------------------------------------
 #include <vector>
-
 //ERROR DE LIBRERÍAS
 #include <bluefruit.h>     // para asegurarte de que se define BLESecurityMode
 using BleSecurityMode = SecureMode_t; // alias para mantener compatibilidad
-
 // ----------------------------------------------------
 // alReves() utilidad
 // pone al revés el contenido de una array en el mismo array
@@ -92,8 +90,8 @@ public:
 	// .........................................................
 	Caracteristica( const char * nombreCaracteristica_ ,
 					uint8_t props,
-					SecureMode_t permisoRead,
-					SecureMode_t permisoWrite, 
+					BleSecurityMode permisoRead,
+					BleSecurityMode permisoWrite, 
 					uint8_t tam ) 
 	  :
 	  Caracteristica( nombreCaracteristica_ ) // llamada al otro constructor
@@ -113,7 +111,7 @@ public:
 	// .........................................................
 	// BleSecurityMode::SECMODE_OPEN  , BleSecurityMode::SECMODE_NO_ACCESS
 	// .........................................................
-	void asignarPermisos( SecureMode_t permisoRead, SecureMode_t permisoWrite ) {
+	void asignarPermisos( BleSecurityMode permisoRead, BleSecurityMode permisoWrite ) {
 	  // no puedo escribir AUN si el constructor llama a esto: Serial.println( "laCaracteristica.setPermission( permisoRead, permisoWrite ); " );
 	  (*this).laCaracteristica.setPermission( permisoRead, permisoWrite );
 	} // ()
@@ -131,8 +129,8 @@ public:
 	// .........................................................
 	// .........................................................
 	void asignarPropiedadesPermisosYTamanyoDatos( uint8_t props,
-												 SecureMode_t permisoRead,
-												 SecureMode_t permisoWrite, 
+												 BleSecurityMode permisoRead,
+												 BleSecurityMode permisoWrite, 
 												 uint8_t tam ) {
 	  asignarPropiedades( props );
 	  asignarPermisos( permisoRead, permisoWrite );

@@ -14,22 +14,22 @@ class Publicador {
   // ............................................................
   // ............................................................
 private:
-	//UUID fijo de 16 bytes, identifica el proyecto 
+
   uint8_t beaconUUID[16] = { 
-	'U', 'U', 'I', 'D', '-', 'G', 'T', 'I', 
-	'-', 'G', 'R', 'E', 'Y', '-', '3', 'A'
+	'G', 'R', 'E', 'Y', '-', 'G', 'T', 'I', 
+	'-', 'P', 'R', 'O', 'Y', '-', '3', 'A'
 	};
 
   // ............................................................
   // ............................................................
 public:
   EmisoraBLE laEmisora {
-	"GTI-GREY-25", //  nombre emisora
+	"GREY-GTI-3A", //  nombre emisora
 	  0x004c, // fabricanteID (Apple)
 	  4 // txPower
 	  };
   
-  const int RSSI = -53; // por poner algo, de momento no lo , seria el valor de referencia de señal
+  const int RSSI = -53; // por poner algo, de momento no lo uso
 
   // ............................................................
   // ............................................................
@@ -37,7 +37,6 @@ public:
 
   // ............................................................
   // ............................................................
-	//sirve para codificar que tipo de dato estas enviando y se insertan en los byte major del iBeacon
   enum MedicionesID  {
 	CO2 = 11,
 	TEMPERATURA = 12,
@@ -49,7 +48,6 @@ public:
   Publicador( ) {
 	// ATENCION: no hacerlo aquí. (*this).laEmisora.encenderEmisora();
 	// Pondremos un método para llamarlo desde el setup() más tarde
-	//no enciende nada solo crea el objeto
   } // ()
 
   // ............................................................
@@ -60,27 +58,42 @@ public:
 
   // ............................................................
   // ............................................................
- void publicarCO2(int16_t valorCO2, uint8_t contador, long tiempoEspera) {
-    // 1️⃣ Reiniciar todo antes de emitir
-    laEmisora.detenerAnuncio();
-    Bluefruit.Advertising.clearData();
-    Bluefruit.ScanResponse.clearData();
+  void publicarCO2( int16_t valorCO2, uint8_t contador,
+					long tiempoEspera ) {
 
-    // 2️⃣ Calcular valores y emitir
-    uint16_t major = (MedicionesID::CO2 << 8) + contador;
-    laEmisora.emitirAnuncioIBeacon(beaconUUID, major, valorCO2, RSSI);
+	//
+	// 1. empezamos anuncio
+	//
+	uint16_t major = (MedicionesID::CO2 << 8) + contador;
+	(*this).laEmisora.emitirAnuncioIBeacon( (*this).beaconUUID, 
+											major,
+											valorCO2, // minor
+											(*this).RSSI // rssi
+									);
 
-    // 3️⃣ Esperar
-    esperar(tiempoEspera);
+	/*
+	Globales::elPuerto.escribir( "   publicarCO2(): valor=" );
+	Globales::elPuerto.escribir( valorCO2 );
+	Globales::elPuerto.escribir( "   contador=" );
+	Globales::elPuerto.escribir( contador );
+	Globales::elPuerto.escribir( "   todo="  );
+	Globales::elPuerto.escribir( major );
+	Globales::elPuerto.escribir( "\n" );
+	*/
 
-    // 4️⃣ Detener anuncio
-    laEmisora.detenerAnuncio();
-}
+	//
+	// 2. esperamos el tiempo que nos digan
+	//
+	esperar( tiempoEspera );
 
+	//
+	// 3. paramos anuncio
+	//
+	//(*this).laEmisora.detenerAnuncio();
+  } // ()
 
   // ............................................................
   // ............................................................
-	//es la misma logica que con co2, pero usa MedicionesID::TEMPERATURA, codifica el tipo de dato en el major y el minor guarda la temperatura
   void publicarTemperatura( int16_t valorTemperatura,
 							uint8_t contador, long tiempoEspera ) {
 

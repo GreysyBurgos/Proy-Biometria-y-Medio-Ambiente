@@ -147,7 +147,7 @@ void loop () {
   
   elPublicador.publicarCO2( valorCO2, // Se publica en el UUID
 							cont,
-							1000 // intervalo de emisión
+							5000 // intervalo de emisión
 							);
   
   // 
@@ -183,15 +183,15 @@ void loop () {
   };
 
 /* COMENTAMOS, SOLO VAMOS A EMITIR CO2
-//
-*/
- elPublicador.laEmisora.emitirAnuncioIBeaconLibre ( &datos[0], 21 );
+// elPublicador.laEmisora.emitirAnuncioIBeaconLibre ( &datos[0], 21 );
 elPublicador.laEmisora.emitirAnuncioIBeaconLibre(datos, 21);
+*/
 
-  esperar( 2500 ); // Ahora mismo sirve para que a Android le de tiempo a procesar y enviar el anuncio a la api
+
+  esperar( 2000 ); // Ahora mismo sirve para que a Android le de tiempo a procesar y enviar el anuncio a la api
   // Le añado 500ms más por precaución, no pierde y Android detecta todos los anuncios, pero como he tenido problemas: “Hombre prevenido vale por dos.”
 
-  elPublicador.laEmisora.detenerAnuncio(); //ESTO YA NO ME SIRVE, PUEDE DETENER EL ANUNCIO PERO NO LIMPIA BUFFER POR LO QUE NO EMITE UNO NUEVO, AHORA LIMPIO YA BUFFERS EN emitirAnuncioIBeacon()
+  // elPublicador.laEmisora.detenerAnuncio(); ESTO YA NO ME SIRVE, PUEDE DETENER EL ANUNCIO PERO NO LIMPIA BUFFER POR LO QUE NO EMITE UNO NUEVO, AHORA LIMPIO YA BUFFERS EN emitirAnuncioIBeacon()
   
   // 
   // 
