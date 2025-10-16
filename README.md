@@ -7,7 +7,6 @@ Este proyecto integra un **dispositivo Arduino** que actúa como **emisora iBeac
 ## 📌 Descripción
 
 Este proyecto forma parte del módulo **"Biometría y Medio Ambiente"** del Grado en Tecnologías Interactivas (GTI-UPV).
-
 El sistema completo mide y publica **niveles de CO₂ y contador de emisiones BLE** mediante un **beacon nRF52840 (Arduino)** que envía tramas *iBeacon* detectadas por una **app Android**.  
 Los datos se almacenan en una **base de datos MySQL** gestionada por un **servidor Node.js/Express** y se muestran en una **interfaz web en tiempo real**.
 ---
